@@ -151,7 +151,7 @@ Each company fetch is wrapped in a try/catch and logs a warning. Check the Actio
  
 ## Contributing
  
-PRs welcome — especially:
+PRs welcome - especially:
 - New companies (Greenhouse/Lever/Ashby slugs are one line each)
 - Better HTML parsers for custom career pages
 - Bug fixes for unstable company APIs
