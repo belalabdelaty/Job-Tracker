@@ -19,17 +19,17 @@ Automatically monitors **25+ top tech company** career pages and sends real-time
 
 ##  Setup (5–10 minutes)
 
-### Step 1 — Fork this repo
+### Step 1 - Fork this repo
 
 Click **Fork** on GitHub to get your own copy.
 
-### Step 2 — Add your secrets
+### Step 2 - Add your secrets
 
 Go to your repo → **Settings → Secrets and variables → Actions → New repository secret**
 
 Add the secrets for whichever channels you want:
 
-#### Telegram (recommended — easiest)
+#### Telegram 
 | Secret | Value |
 |---|---|
 | `TELEGRAM_BOT_TOKEN` | Get from [@BotFather](https://t.me/BotFather) → `/newbot` |
@@ -57,7 +57,7 @@ Add the secrets for whichever channels you want:
 | `SMTP_PASS` | A Gmail [App Password](https://myaccount.google.com/apppasswords) (not your real password!) |
 | `EMAIL_TO` | Where to send alerts |
 
-### Step 3 — (Optional) Set keyword filters
+### Step 3 - (Optional) Set keyword filters
 
 Add a secret called `JOB_KEYWORDS` with comma-separated keywords to only get relevant roles:
 
@@ -67,7 +67,7 @@ engineer,ml,python,backend
 
 Leave it empty to receive all new job postings.
 
-### Step 4 — Enable Actions
+### Step 4 - Enable Actions
 
 Go to **Actions tab** → click **"I understand my workflows, go ahead and enable them"**.
 
@@ -91,7 +91,7 @@ The bot runs **every 2 hours** by default. To change it, edit the cron in `.gith
 
 ##  Adding Companies
 
-**Greenhouse** (most common — Figma, Notion, Linear, etc.):
+**Greenhouse** (most common - Figma, Notion, Linear, etc.):
 ```python
 {"name": "YourCompany", "url": "https://boards-api.greenhouse.io/v1/boards/COMPANY_SLUG/jobs?content=true", "type": "greenhouse"},
 ```
@@ -101,7 +101,7 @@ The bot runs **every 2 hours** by default. To change it, edit the cron in `.gith
 {"name": "YourCompany", "url": "https://api.lever.co/v0/postings/COMPANY_SLUG?mode=json&limit=20", "type": "lever"},
 ```
 
-To find the company slug, visit their jobs page — it's usually in the URL (e.g. `jobs.lever.co/stripe` → slug is `stripe`).
+To find the company slug, visit their jobs page - it's usually in the URL (e.g. `jobs.lever.co/stripe` → slug is `stripe`).
 
 ---
 
