@@ -145,3 +145,14 @@ That's correct , it only alerts on *new* jobs. On the very first run it will pop
 
 **A company's API changed and it's failing silently.**
 Each company fetch is wrapped in a try/catch and logs a warning. Check the Actions run logs for `fetch failed` messages. Open an issue or update the URL.
+
+
+---
+ 
+## Contributing
+ 
+PRs welcome — especially:
+- New companies (Greenhouse/Lever/Ashby slugs are one line each)
+- Better HTML parsers for custom career pages
+- Bug fixes for unstable company APIs
+ 
