@@ -288,6 +288,18 @@ PARSERS = {
 # FETCH JOBS
 # ─────────────────────────────────────────────
 
+def get_job_uid(job):
+    """Generate a unique ID for a job, using content hash as fallback if ID is missing."""
+    job_id = job.get("id", "").strip()
+    
+    if job_id:
+        return f"{job['company']}::{job_id}"
+    
+    content = f"{job['company']}::{job['title']}::{job.get('location', '')}"
+    content_hash = hashlib.md5(content.encode()).hexdigest()
+    return f"{job['company']}::hash::{content_hash}"
+
+
 def fetch_jobs(company):
     name = company["name"]
     url = company["url"]
@@ -498,7 +510,7 @@ def main():
         log.info(f"  → {len(jobs)} jobs fetched")
 
         for job in jobs:
-            uid = f"{company['name']}::{job['id']}"
+            uid = get_job_uid(job)
             if uid not in seen:
                 seen.add(uid)
                 if matches_filter(job):
