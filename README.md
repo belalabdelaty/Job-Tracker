@@ -64,22 +64,21 @@ Add the secrets for whichever channels you want:
 
 ### Step 3 - (Optional) Set keyword filters
 
-The bot comes with **default keywords optimized for SWE internships** (if `JOB_KEYWORDS` is not set):
+**By default, the bot shows ONLY SWE internships & entry-level roles:**
+- ✓ **Shows:** Software Engineer Intern, SWE Internship, New Grad Software Engineer, Entry Level Backend Developer
+- ✗ **Hides:** Marketing Internship, Data Science Intern, Senior Software Engineer, Design Internship, ML Engineer
+
+**Smart Exclusions (automatic):**
+- ❌ Senior, Staff, Lead, Principal roles
+- ❌ Non-SWE roles: Data Science, ML Engineer, DevOps, Design, Product, Sales, Marketing, QA, etc.
+
+To customize with different keywords, add a secret called `JOB_KEYWORDS`:
 
 ```
-software engineer, swe, internship, intern, graduate, entry level, new grad
+backend engineer,python,golang
 ```
 
-**Automatic Exclusions** (to avoid senior roles):
--  senior, staff, lead, principal, director, manager, architect
-
-To customize, add a secret called `JOB_KEYWORDS` with comma-separated keywords:
-
-```
-backend engineer,python,golang,infrastructure
-```
-
-Leave it empty to receive all new job postings.
+Leave the secret **unset** to use the default SWE internship filter.
 
 ### Step 4 - Enable Actions
 

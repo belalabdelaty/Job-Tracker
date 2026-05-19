@@ -367,28 +367,47 @@ def save_seen(seen):
 
 
 # ─────────────────────────────────────────────
-# KEYWORD FILTERING
+# KEYWORD FILTERING - SWE Internships & Entry-Level Only
 # ─────────────────────────────────────────────
 
-KEYWORDS = os.getenv("JOB_KEYWORDS", "software engineer,swe,internship,intern,graduate,entry level,new grad").lower().split(",")
+KEYWORDS = os.getenv("JOB_KEYWORDS", "").lower().split(",")
 KEYWORDS = [k.strip() for k in KEYWORDS if k.strip()]
 
-# Exclude senior/staff positions
-EXCLUDE_KEYWORDS = ["senior", "staff", "lead", "principal", "director", "manager", "architect"]
+# Software/Engineering keywords required
+SOFTWARE_KEYWORDS = ["software engineer", "swe", "developer", "backend", "frontend", "fullstack", "full stack", "engineer"]
+
+# Entry-level indicators
+ENTRY_KEYWORDS = ["internship", "intern", "new grad", "entry level", "graduate", "fresh", "no experience", "early career"]
+
+# Exclude senior/staff/non-SWE positions
+EXCLUDE_KEYWORDS = ["senior", "staff", "lead", "principal", "director", "manager", "architect", "devops", "data scientist", "machine learning", "ml engineer", "design", "ux", "ui", "product", "marketing", "sales", "hr", "finance", "accounting", "operations", "qa", "test"]
 
 def matches_filter(job):
-    if not KEYWORDS:
-        return True
-    
     text = (job["title"] + " " + job.get("location", "")).lower()
     
-    # Check if any excluded keyword is in the title
+    # If custom keywords provided, use them (for backward compatibility)
+    if KEYWORDS:
+        for exclude_kw in EXCLUDE_KEYWORDS:
+            if exclude_kw in text:
+                return False
+        return any(kw in text for kw in KEYWORDS)
+    
+    # Default: SWE internships & entry-level only
+    has_software_kw = any(kw in text for kw in SOFTWARE_KEYWORDS)
+    
+    # Check for excluded keywords first
     for exclude_kw in EXCLUDE_KEYWORDS:
         if exclude_kw in text:
             return False
     
-    # Check if at least one include keyword matches
-    return any(kw in text for kw in KEYWORDS)
+    # Must have a software keyword
+    if not has_software_kw:
+        return False
+    
+    # Must be entry-level
+    has_entry_kw = any(kw in text for kw in ENTRY_KEYWORDS)
+    
+    return has_entry_kw
 
 
 # ─────────────────────────────────────────────
