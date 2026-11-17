@@ -17,6 +17,7 @@ import pandas as pd
 import sqlite3
 from pathlib import Path
 import subprocess
+import sys
 import os
 import re
 import html
@@ -52,7 +53,7 @@ def load_jobs():
         df = pd.read_sql_query("""
             SELECT id, title, company, location, url, source,
                    score, status, type, posted_at, saved,
-                   salary_min, salary_max, salary_text, content, seen_at, fetched_at
+                   salary_min, salary_max, salary_text, content, seen_at
             FROM jobs
             ORDER BY score DESC
         """, conn)
@@ -486,7 +487,7 @@ def start_scraper(n_clicks):
         return "⏳ Already running...", True
     try:
         scraper_process = subprocess.Popen(
-            ["python", "scripts/scraper.py"],
+            [sys.executable, "run.py"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True

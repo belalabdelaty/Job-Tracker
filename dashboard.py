@@ -169,7 +169,7 @@ class Database:
                         ))
                     saved += 1
                 except Exception as e:
-                    pass
+                    print(f"[db] failed to save {getattr(job, 'url', '?')}: {e}")
             
             await conn.commit()
         return saved

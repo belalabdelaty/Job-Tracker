@@ -1,4 +1,7 @@
+data/*.db
+data/*.db-journal
 data/seen_jobs.json
 __pycache__/
 *.pyc
 .env
+.venv/

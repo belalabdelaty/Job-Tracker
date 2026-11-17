@@ -1,75 +1,55 @@
-name: Job Tracker Bot
+name: RemoteLover scrape
 
 on:
   schedule:
-    # Runs every 2 hours — adjust as you like
     - cron: "0 */2 * * *"
-  workflow_dispatch:  # allows manual trigger from GitHub UI
+  workflow_dispatch:
+
+concurrency:
+  group: remotelover-scrape
+  cancel-in-progress: false
 
 jobs:
-  track-jobs:
+  scrape:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 20
     steps:
-      # ── 1. Checkout ────────────────────────────────────
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # ── 2. Restore seen-jobs cache ─────────────────────
-      # This is the "memory" of jobs already seen.
-      # Without this, every run would re-alert all jobs.
-      - name: Restore seen jobs cache
-        uses: actions/cache@v4
-        with:
-          path: data/seen_jobs.json
-          key: seen-jobs-${{ runner.os }}
-          restore-keys: |
-            seen-jobs-
-
-      # ── 3. Set up Python ───────────────────────────────
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
-      # ── 4. Install dependencies ────────────────────────
-      - name: Install dependencies
-        run: pip install requests
+      - run: pip install -r requirements.txt
 
-      # ── 5. Run scraper ─────────────────────────────────
-      - name: Run Job Tracker
+      # The SQLite DB is the memory between runs. Restore the newest one.
+      - name: Restore database
+        uses: actions/cache/restore@v4
+        with:
+          path: data/jobs.db
+          key: jobs-db-${{ github.run_id }}
+          restore-keys: jobs-db-
+
+      - name: Scrape
         env:
-          # ── Telegram ──────────────────────────────────
-          TELEGRAM_BOT_TOKEN:   ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID:     ${{ secrets.TELEGRAM_CHAT_ID }}
+          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+          GITHUB_TOKEN_SCRAPER: ${{ secrets.GITHUB_TOKEN }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+        run: GITHUB_TOKEN="$GITHUB_TOKEN_SCRAPER" python run.py
 
-          # ── Discord ───────────────────────────────────
-          DISCORD_WEBHOOK_URL:  ${{ secrets.DISCORD_WEBHOOK_URL }}
-
-          # ── WhatsApp (Twilio) ─────────────────────────
-          TWILIO_ACCOUNT_SID:   ${{ secrets.TWILIO_ACCOUNT_SID }}
-          TWILIO_AUTH_TOKEN:    ${{ secrets.TWILIO_AUTH_TOKEN }}
-          TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
-          TWILIO_WHATSAPP_TO:   ${{ secrets.TWILIO_WHATSAPP_TO }}
-
-          # ── Email (Gmail / any SMTP) ──────────────────
-          SMTP_HOST:  ${{ secrets.SMTP_HOST }}
-          SMTP_PORT:  ${{ secrets.SMTP_PORT }}
-          SMTP_USER:  ${{ secrets.SMTP_USER }}
-          SMTP_PASS:  ${{ secrets.SMTP_PASS }}
-          EMAIL_TO:   ${{ secrets.EMAIL_TO }}
-
-          # ── Optional keyword filter ───────────────────
-          # Leave EMPTY for INTERNSHIPS ONLY (default).
-          # Set to custom keywords for backward compatibility: "engineer,backend,python"
-          JOB_KEYWORDS: ${{ secrets.JOB_KEYWORDS }}
-
-        run: python scripts/scraper.py
-
-      # ── 6. Persist seen-jobs cache ─────────────────────
-      - name: Save seen jobs cache
+      - name: Save database
         uses: actions/cache/save@v4
         if: always()
         with:
-          path: data/seen_jobs.json
-          key: seen-jobs-${{ runner.os }}-${{ github.run_id }}
+          path: data/jobs.db
+          key: jobs-db-${{ github.run_id }}
+
+      - name: Upload database as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobs-db
+          path: data/jobs.db
+          retention-days: 7
+          if-no-files-found: ignore

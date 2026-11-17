@@ -1,0 +1,6 @@
+-r requirements.txt
+dash>=2.17
+dash-bootstrap-components>=1.6
+pandas>=2.2
+scikit-learn>=1.5
+google-generativeai>=0.8   # optional: AI cover letters

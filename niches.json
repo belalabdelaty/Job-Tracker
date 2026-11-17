@@ -1,0 +1,7 @@
+{
+  "customer_support": ["customer support", "customer success", "support specialist", "help desk", "tech support", "live chat", "support agent"],
+  "virtual_assistant": ["virtual assistant", "executive assistant", "administrative assistant", "admin assistant", "personal assistant"],
+  "data_ops": ["data entry", "data annotation", "labeling", "transcription", "content moderator", "moderation", "qa tester", "user testing"],
+  "operations": ["operations associate", "project coordinator", "onboarding specialist", "community manager", "trust and safety"],
+  "sales_outreach": ["appointment setter", "lead generation", "sdr", "sales development", "outreach specialist"]
+}
